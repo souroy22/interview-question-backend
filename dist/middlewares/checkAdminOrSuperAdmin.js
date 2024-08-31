@@ -12,10 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const verifyPassword = (password, hashedPassword) => __awaiter(void 0, void 0, void 0, function* () {
-    const isValid = yield bcrypt_1.default.compare(password, hashedPassword);
-    return isValid;
+const getUserByEmail_1 = __importDefault(require("../utils/getUserByEmail"));
+const checkIsAdminOrSuperAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield (0, getUserByEmail_1.default)(req.user.user.email);
+    if (!user) {
+        return res.status(400).json({ error: "No such user found!" });
+    }
+    if (user.role !== "ADMIN" && user.role !== "SUPER_ADMIN") {
+        return res.status(400).json({ error: "Access denied!" });
+    }
+    next();
 });
-exports.default = verifyPassword;
-//# sourceMappingURL=verifyPassword.js.map
+exports.default = checkIsAdminOrSuperAdmin;
+//# sourceMappingURL=checkAdminOrSuperAdmin.js.map

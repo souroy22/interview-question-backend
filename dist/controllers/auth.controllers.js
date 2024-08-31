@@ -48,6 +48,7 @@ const authControllers = {
                     lastName: newUser.lastName,
                     phone: newUser.phone,
                     avatar: newUser.avatar,
+                    role: newUser.role,
                 },
                 token,
             });
@@ -68,7 +69,8 @@ const authControllers = {
                     .status(404)
                     .json({ error: "Email ID not found. Please signup." });
             }
-            if (!(0, verifyPassword_1.default)(password, user.password)) {
+            const isCorrectPassword = yield (0, verifyPassword_1.default)(password, user.password);
+            if (!isCorrectPassword) {
                 return res.status(401).json({ error: "Invalid credentials" });
             }
             const structuredEmployee = {
@@ -83,6 +85,7 @@ const authControllers = {
                     lastName: user.lastName,
                     phone: user.phone,
                     avatar: user.avatar,
+                    role: user.role,
                 },
                 token,
             });
