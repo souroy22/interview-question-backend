@@ -9,6 +9,7 @@ export interface IQuestion extends Document {
   topic: ObjectId;
   type: string;
   solution: string;
+  language: string;
   youtubeLink: string | null;
   websiteLink: string | null;
 }
@@ -24,6 +25,11 @@ const questionSchema: Schema<IQuestion> = new Schema({
   verified: { type: Boolean, default: false },
   type: { type: String, required: true, enum: ["THEORY", "CODING"] },
   topic: { type: Types.ObjectId, required: true, ref: "Topic" },
+  language: {
+    type: String,
+    required: true,
+    enum: ["javascript", "typescript", "jsx", "tsx"],
+  },
 });
 
 const Question = model<IQuestion>("Question", questionSchema);

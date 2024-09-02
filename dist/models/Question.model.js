@@ -12,6 +12,11 @@ const questionSchema = new mongoose_1.Schema({
     verified: { type: Boolean, default: false },
     type: { type: String, required: true, enum: ["THEORY", "CODING"] },
     topic: { type: mongoose_1.Types.ObjectId, required: true, ref: "Topic" },
+    language: {
+        type: String,
+        required: true,
+        enum: ["javascript", "typescript", "jsx", "tsx"],
+    },
 });
 const Question = (0, mongoose_1.model)("Question", questionSchema);
 exports.default = Question;

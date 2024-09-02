@@ -50,6 +50,7 @@ const questionControllers = {
         websiteLink: 1,
         type: 1,
         slug: 1,
+        language: 1,
       });
       const questions = await paginate(reqQuery, req.pagination);
       return res.status(200).json(questions);
@@ -76,12 +77,13 @@ const questionControllers = {
           createdBy: 1,
           type: 1,
           topic: 1,
+          language: 1,
         })
         .populate([
           { path: "createdBy", select: "name _id email" },
           {
             path: "topic",
-            select: "title slug createdBy verified category",
+            select: "name slug createdBy verified category -_id",
             populate: [
               { path: "category", select: "name slug -_id" },
               { path: "createdBy", select: "name _id email" },
@@ -89,7 +91,6 @@ const questionControllers = {
           },
         ]);
       const user = await getUserData(req.user.user.email);
-
       const canModify =
         user.role === "SUPER_ADMIN" ||
         question.createdBy.toString() === req.user?.user?.id;
@@ -113,6 +114,7 @@ const questionControllers = {
         solution,
         youtubeLink,
         websiteLink,
+        language,
       } = req.body;
       const topic = await Topic.findOne({ slug: topicSlug });
       if (!topic) {
@@ -139,6 +141,7 @@ const questionControllers = {
         youtubeLink,
         websiteLink,
         verified,
+        language,
       });
 
       await question.save();
@@ -161,6 +164,7 @@ const questionControllers = {
         youtubeLink,
         websiteLink,
         verified,
+        language,
       } = req.body;
       const { questionSlug } = req.params;
       const isExist = await Question.findOne({ slug: questionSlug });
@@ -193,6 +197,7 @@ const questionControllers = {
           youtubeLink,
           websiteLink,
           verified,
+          language,
         },
         {
           new: true,

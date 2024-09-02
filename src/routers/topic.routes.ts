@@ -30,7 +30,7 @@ topicRouter.delete(
 );
 
 topicRouter.get(
-  "/all/:categorySlug",
+  "/all",
   verifyToken,
   paginateMiddleware,
   topicControllers.getTopics

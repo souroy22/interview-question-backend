@@ -46,13 +46,15 @@ const topicControllers = {
   },
   getTopics: async (req: Request, res: Response) => {
     try {
-      const { searchValue, isVerified } = req.query;
-      const { categorySlug } = req.params;
-      const category = await Category.findOne({ slug: categorySlug });
-      if (!category) {
-        return res.status(404).json({ error: "No category found!" });
+      const { searchValue, isVerified, categorySlug } = req.query;
+      const query: any = {};
+      if (categorySlug) {
+        const category = await Category.findOne({ slug: categorySlug });
+        if (!category) {
+          return res.status(404).json({ error: "No category found!" });
+        }
+        query["category"] = category._id;
       }
-      const query: any = { category: category._id };
       const trimmedSearchValue = searchValue?.toString().trim();
       if (trimmedSearchValue) {
         query["name"] = { $regex: trimmedSearchValue, $options: "i" };
@@ -67,8 +69,9 @@ const topicControllers = {
         slug: 1,
         createdBy: 1,
         verified: 1,
+        category: 1,
         _id: 0,
-      });
+      }).populate({ path: "category", select: "name slug -_id" });
       let topics = await paginate(reqQuery, req.pagination);
 
       const modifiedTopics = topics.data.map((topic: any) => {
@@ -82,7 +85,7 @@ const topicControllers = {
 
         return {
           ...topicData,
-          category: { name: category.name, slug: category.slug },
+          // category: { name: category.name, slug: category.slug },
           canModify,
         };
       });
@@ -105,6 +108,7 @@ const topicControllers = {
         category?: ObjectId;
       } = {};
       if (name) {
+        console.log("name", name);
         updateFields["name"] = name.toString();
       }
       if (verified !== undefined) {

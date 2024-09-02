@@ -58,13 +58,15 @@ const topicControllers = {
     }),
     getTopics: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { searchValue, isVerified } = req.query;
-            const { categorySlug } = req.params;
-            const category = yield Category_model_1.default.findOne({ slug: categorySlug });
-            if (!category) {
-                return res.status(404).json({ error: "No category found!" });
+            const { searchValue, isVerified, categorySlug } = req.query;
+            const query = {};
+            if (categorySlug) {
+                const category = yield Category_model_1.default.findOne({ slug: categorySlug });
+                if (!category) {
+                    return res.status(404).json({ error: "No category found!" });
+                }
+                query["category"] = category._id;
             }
-            const query = { category: category._id };
             const trimmedSearchValue = searchValue === null || searchValue === void 0 ? void 0 : searchValue.toString().trim();
             if (trimmedSearchValue) {
                 query["name"] = { $regex: trimmedSearchValue, $options: "i" };
@@ -78,8 +80,9 @@ const topicControllers = {
                 slug: 1,
                 createdBy: 1,
                 verified: 1,
+                category: 1,
                 _id: 0,
-            });
+            }).populate({ path: "category", select: "name slug -_id" });
             let topics = yield (0, pagination_1.paginate)(reqQuery, req.pagination);
             const modifiedTopics = topics.data.map((topic) => {
                 var _a, _b;
@@ -88,7 +91,9 @@ const topicControllers = {
                 // Ensure that user and user.id are properly defined
                 const canModify = user.role === "SUPER_ADMIN" ||
                     topicData.createdBy.toString() === ((_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id);
-                return Object.assign(Object.assign({}, topicData), { category: { name: category.name, slug: category.slug }, canModify });
+                return Object.assign(Object.assign({}, topicData), { 
+                    // category: { name: category.name, slug: category.slug },
+                    canModify });
             });
             return res.status(200).json(Object.assign(Object.assign({}, topics), { data: modifiedTopics }));
         }
@@ -106,6 +111,7 @@ const topicControllers = {
             const { slug } = req.params;
             const updateFields = {};
             if (name) {
+                console.log("name", name);
                 updateFields["name"] = name.toString();
             }
             if (verified !== undefined) {

@@ -13,6 +13,6 @@ const topicRouter = express_1.default.Router();
 topicRouter.post("/create", verifyToken_1.default, checkAdminOrSuperAdmin_1.default, (0, checkMissingFields_1.default)("CREATE_CATEGORY"), topic_controllers_1.default.createTopic);
 topicRouter.patch("/update/:slug", verifyToken_1.default, checkAdminOrSuperAdmin_1.default, topic_controllers_1.default.updateTopic);
 topicRouter.delete("/delete/:slug", verifyToken_1.default, checkAdminOrSuperAdmin_1.default, topic_controllers_1.default.deleteTopic);
-topicRouter.get("/all/:categorySlug", verifyToken_1.default, pagination_1.paginateMiddleware, topic_controllers_1.default.getTopics);
+topicRouter.get("/all", verifyToken_1.default, pagination_1.paginateMiddleware, topic_controllers_1.default.getTopics);
 exports.default = topicRouter;
 //# sourceMappingURL=topic.routes.js.map

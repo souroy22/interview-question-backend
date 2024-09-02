@@ -59,6 +59,7 @@ const questionControllers = {
                 websiteLink: 1,
                 type: 1,
                 slug: 1,
+                language: 1,
             });
             const questions = yield (0, pagination_1.paginate)(reqQuery, req.pagination);
             return res.status(200).json(questions);
@@ -87,12 +88,13 @@ const questionControllers = {
                 createdBy: 1,
                 type: 1,
                 topic: 1,
+                language: 1,
             })
                 .populate([
                 { path: "createdBy", select: "name _id email" },
                 {
                     path: "topic",
-                    select: "title slug createdBy verified category",
+                    select: "name slug createdBy verified category -_id",
                     populate: [
                         { path: "category", select: "name slug -_id" },
                         { path: "createdBy", select: "name _id email" },
@@ -115,7 +117,7 @@ const questionControllers = {
     }),
     createQuestion: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { title, description, topicSlug, type, solution, youtubeLink, websiteLink, } = req.body;
+            const { title, description, topicSlug, type, solution, youtubeLink, websiteLink, language, } = req.body;
             const topic = yield Topic_model_1.default.findOne({ slug: topicSlug });
             if (!topic) {
                 return res.status(404).json({ error: "No such topic found!" });
@@ -141,6 +143,7 @@ const questionControllers = {
                 youtubeLink,
                 websiteLink,
                 verified,
+                language,
             });
             yield question.save();
             return res.status(200).json(question);
@@ -155,7 +158,7 @@ const questionControllers = {
     updateQuestion: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
         try {
-            const { title, description, topicSlug, type, solution, youtubeLink, websiteLink, verified, } = req.body;
+            const { title, description, topicSlug, type, solution, youtubeLink, websiteLink, verified, language, } = req.body;
             const { questionSlug } = req.params;
             const isExist = yield Question_model_1.default.findOne({ slug: questionSlug });
             if (!isExist) {
@@ -184,6 +187,7 @@ const questionControllers = {
                 youtubeLink,
                 websiteLink,
                 verified,
+                language,
             }, {
                 new: true,
                 runValidators: true,
