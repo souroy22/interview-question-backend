@@ -10,7 +10,8 @@
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "npx husky install && npm run build"
   },
   "keywords": [],
   "author": "Sourav Roy",
