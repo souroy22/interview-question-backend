@@ -1,6 +1,1 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-npm run ts.check
-npm run build
-git add dist
+npx husky add .husky/pre-commit "npm run ts.check && npm run build && git add dist"
