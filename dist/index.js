@@ -13,7 +13,7 @@ const corsConfig_1 = require("./configs/corsConfig");
 const dbConfig_1 = __importDefault(require("./database/dbConfig"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || "8000";
+const PORT = process.env.PORT || "3000";
 app.set("port", PORT);
 app.use(express_1.default.json({ limit: "10kb" }));
 app.use((0, cors_1.default)(corsConfig_1.corsOptions));
