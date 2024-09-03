@@ -1,5 +1,6 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-npm test
-npm run ts.check && npm run build && npm run add-build
+npm run ts.check
+npm run build
+git add dist

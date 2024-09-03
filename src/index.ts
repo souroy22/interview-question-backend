@@ -10,7 +10,7 @@ import { PaginationOptions } from "./utils/pagination";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || "8000";
+const PORT = process.env.PORT || "3000";
 
 declare global {
   namespace Express {
